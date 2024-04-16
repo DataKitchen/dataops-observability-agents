@@ -1,0 +1,332 @@
+[build-system]
+requires = [
+    "setuptools ~= 65.3",
+    "wheel",
+    "build"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "observability_agents"
+dynamic = ["version"]
+description = "Datakitchen Inc. Observability Agents"
+urls = { "homepage" = "https://datakitchen.io" }
+authors = []
+license = { "text" = "CLOSED"  }
+readme = "README.md"
+classifiers = [
+    "Intended Audience :: Developers",
+    "Intended Audience :: Data Engineers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.11",
+]
+requires-python = ">=3.11"
+
+dependencies = [
+    "azure-identity==1.15.0",
+    "azure-synapse-artifacts==0.18.0",
+    "azure-eventhub==5.11.5",
+    "azure-eventhub-checkpointstoreblob-aio==1.1.4",
+    "httpx==0.25.2",
+    "trio==0.23.1",
+    "trio_websocket==0.11.0",
+    "python-dateutil==2.8.2",
+    "pydantic==2.5.2",
+    "pydantic_settings==2.1.0",
+    "pyodbc==5.0.1"
+]
+
+[project.optional-dependencies]
+dev = [
+    "black~=23.12.0",
+    "types-python-dateutil==2.8.19.14",
+    "invoke~=2.2.0",
+    "lxml~=4.9.1",
+    "mypy~=1.7.0",
+    "pre-commit~=3.6.0",
+    "ruff==0.1.7",
+    "rich~=13.7.0",
+    "pytest~=7.4.2",
+    "pytest-cov~=4.1.0",
+    "pytest-xdist~=3.3.1",
+    "pytest-trio~=0.8.0",
+    "pytest_httpx~=0.27.0",
+    "pytest-httpserver~=1.0.8",
+    "semver~=3.0.1",
+    "tomli-w~=1.0.0",
+    "towncrier~=23.11.0",
+    "trustme~=1.1.0",
+]
+build = [
+    "build",
+    "setuptools~=67.8",
+    "wheel",
+    "trove-classifiers",
+]
+
+release = [
+    "bumpver~=2023.1124",
+    "mkdocs~=1.5.2",
+    "mkdocs-material~=9.2.8",
+]
+
+[project.entry-points.console_scripts]
+observability-agent = "framework.__main__:cli"
+
+[tool.setuptools.dynamic]
+version = {attr = "framework.__version__"}
+
+[tool.setuptools.packages.find]
+# see the important note for why we glob. TL;DR: Otherwise you don't get submodules
+# https://setuptools.pypa.io/en/latest/userguide/package_discovery.html#finding-simple-packages
+include = [
+    "agents*",
+    "framework*",
+    "registry*",
+    "toolkit*",
+]
+exclude = [ "*.tests", "changelog.d*", "tests*", "invocations*", "deploy*", "scripts*", "testlib*"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+# --strict-markers means the markers have to be defined in this file before use, which prevents mispellings.
+# --strict-config means that any warnings encountered while parsing the `pytest`configuration file will raise errors.
+# -ra: show extra test data.
+addopts = "-ra --strict-markers --strict-config --durations=10 "
+python_files = "test_*.py"
+python_classes = "Test_"
+python_functions = "test_*"
+trio_mode = true
+
+markers = [
+    "unit: The test is a unit test and is thus expected to be fast with little setup",
+    "integration: The test is an integration test and is thus expected to be somewhat slower with a little more setup",
+    "functional: The test is a functional test and is thus expected to be slower with greater setup",
+    "slow: Mark tests which are known to be slow. Useful for filtering",
+]
+
+# see: https://mypy.readthedocs.io/en/stable/config_file.html#using-a-pyproject-toml-file
+# for settings that do not have a comment,
+# see: https://mypy.readthedocs.io/en/stable/config_file.html
+# for an explanation of their functionality.
+# WARNING: When changing mypy configurations, be sure to test them after removing your .mypy_cache
+[tool.mypy]
+python_version = "3.11"
+check_untyped_defs = true
+disallow_untyped_decorators = true
+disallow_untyped_defs = true
+# This warns if any returns get cast to 'Any' due to type uncertainty by mypy. Since 'Any' is a valid return type
+# for any function, returning any from a str function would be valid. This causes it to raise a warning instead.
+warn_return_any = true
+# This shows an error-code on failure, which is useful on debugging and possibly ignoring those particular
+# lines if need-be.
+show_error_codes = true
+# This warns us if we're using '# type ignore' on a function which mypy knows it has definitions for.
+# Hopefully this allows us to phase in type-checks on more libraries.
+warn_unused_ignores = true
+# Enables PEP 420 style namespace packages. This is a complex topic,
+# but my reading suggests this is a generally 'good' idea.
+# so see: https://mypy.readthedocs.io/en/stable/config_file.html#confval-namespace_packages
+namespace_packages = true
+warn_redundant_casts = true
+# Remember that time you forgot to put a return in the function? This warns us of that.
+# i.e.,
+#
+# def foo() -> str:
+#     x = 'a' + 'x'
+# will return an error for not having the return it promised.
+warn_no_return = true
+# This attempts to warn us when we encounter code that is currently unreachable.
+warn_unreachable = true
+# Now for some configurations to improve our error messages Attempts to make the output prettier for us mere mortals.
+pretty = true
+# This tries to show some additional context around where the error is occuring
+show_error_context = true
+# Mypy appears smart enough to ignore hidden directories. But it needs to scan __pycache__ for .pyc and pyi files,
+# so it cannot honor gitignore.
+exclude = [
+    '''^(?:.*\/)+[tT]ests?''',
+    'conftest.py',
+    'venv/',
+    'tests/',
+    'build/',
+    'testlib/',
+    'legacy_framework/',
+    'legacy_agents/',
+]
+
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = "trio_websocket"
+ignore_missing_imports = true
+
+
+[tool.black]
+line-length = 120
+target-version = ['py311']
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | env
+    | venv
+    | _build
+    | buck-out
+    | build
+    | dist
+    | legacy_agents
+    | legacy_framework
+  )/
+  | foo.py           # also separately exclude a file named foo.py in
+                     # the root of the project
+)
+'''
+
+[tool.ruff]
+# see: https://beta.ruff.rs/docs/rules.
+# Enable the following checks. Remember you can disable individual instances
+# with # noqa [code]. You can also add per-file ignores.
+
+select = [
+    'A',        # Check builtin shadowing
+    'ASYNC',    # Flake-8 Async calls. Will probably need to be clipped.
+    'B',        # Common mistake checker
+    'BLE',      # Blind "except" check. e.g., except:, except Exception...
+    'C4',       # Comprehension linting
+    'COM',      # Check trailing comma
+    'DTZ',      # catch common errors with datetime.now/today calls
+    'E',        # Pyflakes extended checks.
+    'ERA',      # delete commented out code.
+    'F',        # Standard Pyflakes checks
+    'FA',       # Flake8 Future Anotations
+    'FLY',      # Flynt checks
+    'I',        # isort support.
+    'INP',      # Check when we're accidentally creating an implicit package
+    'ISC',      # Implicit String Concat check. I.e., ("foo" "bar") mistake.
+    'N',        # PEP8-Naming
+    'PERF',     # Performance Anti-pattern checks
+    'PGH',      # Pygrep. A set of regex-based checks.
+    'PIE',      # Check misc unnecessary statements and repeats.
+    'PL',       # Pylint checks
+    'PT',       # Pytest style checks
+    'RUF',      # Ruff self-checks.
+    'T10',      # catch leftover debugger statement
+    'T20',      # Check leftover prints and pprints
+    'TRIO',     # Trio checks. In preview mode.
+    'TRY',      # more Exception checks.
+    'UP',       # Pyupgrade. Prefer new syntax.
+    'W',        # Pyflakes Warning
+]
+target-version = "py311"
+line-length = 120
+preview = true
+show-source = true
+
+# globally ignore the following error codes
+ignore = [
+    'TRY003',   # Avoid specifying long messages outside the exception class
+    'PLR2004',  # Avoid needing to assign constants to variables.
+    'E501',     # File too long. Black handles this.
+    'E722',     # Bare Excepts.
+    'PLR0917',  # Too many positional args.
+    'PLR6301',  # Detect if function could be static or not.
+    'PLR6201',  # Using sets when testing for membership
+    'PLC1901',  # Simplifying falsey checks using "not"
+    'TRIO109',  # Prefer 'trio.fail_after' and 'trio.move_on_after' over manual 'async' timeout behavior
+    'TRIO115',  # Zero sleep check: This replaces sleep(var) calls with checkpoint() when it thinks var can be zero
+]
+
+# * ERA001: Do not automatically and irreversibly remove code
+unfixable = ["ERA001"]
+
+exclude = [
+    "legacy_agents",
+    "legacy_framework",
+]
+
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F403", "F401"]
+"framework/bases/configuration/__init__.py" = ["F405"]
+"scripts/**" = ["INP001", "T201"]
+"scripts/check-tests-are-marked.py" = ["S603", "S607", "PLW1510"]
+"tasks.py" = ["F403"]
+"tests/**" = ["S101", "PLR0913"]
+"invocations/**" = ["ARG001", "T201"]
+
+
+# See: https://coverage.readthedocs.io/en/latest/config.html
+[tool.coverage.run]
+branch = true
+# Every time there is a new top-level module, this will need to be expanded.
+source = [
+    "agents",
+    "framework",
+    "registry",
+    "toolkit",
+]
+
+[tool.coverage.report]
+# We don't need to report the coverage lines on tests
+omit = ["*/*tests/*"]
+# This skips __init__.py and other empty files.
+skip_empty = true
+
+[tool.towncrier]
+directory = "changelog.d"
+filename = "docs/CHANGELOG.md"
+start_string = "<!-- towncrier release notes start -->\n"
+underlines = ["", "", ""]
+template = "changelog.d/template.jinja"
+title_format = "## Observability Agents: {version} - {project_date}"
+
+[[tool.towncrier.type]]
+directory = "removed"
+name = "Removed"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "deprecated"
+name = "Deprecated"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "added"
+name = "Added"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "changed"
+name = "Changed"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "fixed"
+name = "Fixed"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "chore"
+name = "Chore"
+showcontent = false
+
+[tool.bumpver]
+current_version = "2.0.0"
+version_pattern = "MAJOR.MINOR.PATCH[PYTAGNUM]"
+commit_message = "Bump version: {old_version} -> {new_version}"
+commit = true
+tag = true
+push = false
+
+[tool.bumpver.file_patterns]
+"framework/__init__.py" = [
+    '__version__ = "{version}"',
+]

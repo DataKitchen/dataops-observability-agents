@@ -1,0 +1,62 @@
+#!/usr/bin/env python3
+import re
+import sys
+
+from agents.databricks.configuration import DatabricksConfiguration
+from agents.powerbi.config import PowerBIConfiguration
+from agents.ssis.config import SsisConfiguration
+from agents.synapse_analytics.config import SynapseAnalyticsConfiguration
+from framework.configuration import CoreConfiguration, HTTPClientConfig
+
+"""
+Check that at least all requried settings are represented in the deploy script.  The settings are expected to occur with
+their environment variable name at the start of a line in the deploy script.
+"""
+
+ALL_CONFIG_CLASSES = [
+    CoreConfiguration,
+    HTTPClientConfig,
+    DatabricksConfiguration,
+    SsisConfiguration,
+    SynapseAnalyticsConfiguration,
+    PowerBIConfiguration,
+]
+"""All leaf-level config classes. Base classes implicitly included"""
+
+SETUP_TEMPLATE_SCRIPT = "deploy/setup_template"
+"""Path to setup_template script relative to repository root"""
+
+
+def get_deploy_script_content() -> str:
+    try:
+        with open(SETUP_TEMPLATE_SCRIPT, encoding="utf8") as f:
+            return f.read()
+    except FileNotFoundError:
+        print(f"Could not find script {SETUP_TEMPLATE_SCRIPT}, script must be run from root")
+        raise
+
+
+def get_missing_settings() -> list[str]:
+    script_content = get_deploy_script_content()
+    missing_settings = []
+    for config_class in ALL_CONFIG_CLASSES:
+        env_prefix = config_class.model_config["env_prefix"]
+        for required_setting in config_class.model_json_schema().get("required", []):
+            env_name = f"{env_prefix}{required_setting.upper()}"
+            if not re.search(rf"^{env_name}=", script_content, re.MULTILINE):
+                missing_settings.append(env_name)
+    return missing_settings
+
+
+def main() -> int:
+    if missing_settings := get_missing_settings():
+        print(f"Missing settings in {SETUP_TEMPLATE_SCRIPT}")
+        for setting in missing_settings:
+            print(f"\t{setting}")
+        return 1
+    print("Everything seems okay")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

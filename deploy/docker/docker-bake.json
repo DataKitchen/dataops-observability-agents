@@ -1,0 +1,19 @@
+{
+  "variable": {
+	"AGENT_VERSION": {
+	}
+  },
+	"target": {
+		"agents": {
+			"dockerfile": "deploy/docker/observability-agent.dockerfile",
+			"tags": [
+				"datakitchen/dataops-observability-agents",
+				"datakitchen/dataops-observability-agents:v${AGENT_VERSION}",
+				"datakitchen/dataops-observability-agents:v${index(regex(\"([0-9]+\\\\.[0-9]+)\\\\.[0-9]+\", AGENT_VERSION), 0)}",
+				"datakitchen/dataops-observability-agents:v${index(regex(\"([0-9]+)\\\\.[0-9]+\\\\.[0-9]+\", AGENT_VERSION), 0)}"
+			],
+			"context": ".",
+			"platforms": ["linux/amd64", "linux/arm64"]
+		}
+	}
+}

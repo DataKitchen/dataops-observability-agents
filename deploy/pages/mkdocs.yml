@@ -1,0 +1,14 @@
+site_name: Observability Agents
+repo_url: <TBD>
+theme:
+  name: material
+docs_dir: ../../docs/
+site_url: <TBD>
+site_dir: ../../public/
+nav:
+  - Home: index.md
+  - README: dev-README.md
+  - Overview: overview.md
+  - Tutorial: writing-an-agent.md
+  - Changelog: CHANGELOG.md
+  - Draft release notes: PENDING_CHANGELOG.md

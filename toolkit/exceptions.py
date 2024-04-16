@@ -1,0 +1,2 @@
+class UnrecoverableError(Exception):
+    pass

@@ -1,0 +1,37 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-merge-conflict
+      - id: end-of-file-fixer
+        exclude_types: ["json"]
+      - id: trailing-whitespace
+        exclude_types: ["json"]
+  - repo: https://github.com/psf/black
+    rev: 23.12.0
+    hooks:
+      - id: black
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: 'v0.1.7'
+    hooks:
+      - id: ruff
+        verbose: true
+        args: [ --fix, --show-fixes, --respect-gitignore, --exit-non-zero-on-fix ]
+  - repo: local
+    hooks:
+    - id: check-tests-are-marked
+      alias: check-tests-are-marked
+      name: check-tests-are-marked
+      entry: scripts/check-tests-are-marked.py
+      language: python
+    - id: check-docker-file-extension
+      alias: docker-filename
+      name: check-docker-file-extension
+      entry: scripts/check-docker-extensions.py
+      language: python
+    - id: check-setup-template-settings
+      name: check-setup-template-settings
+      entry: scripts/check-setup-template-settings
+      language: system
+      types: [python]
+      pass_filenames: false

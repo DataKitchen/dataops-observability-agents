@@ -1,0 +1,87 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  namespace: datakitchen
+  name: obs-listener-secret
+type: Opaque
+stringData:
+  EVENTS_API_HOST: ''
+  EVENTS_API_KEY: ''
+  EVENT_HUB_CONN_STR: ''
+  EVENT_HUB_NAME: ''
+  AZURE_STORAGE_CONN_STR: ''
+  BLOB_CONTAINER_NAME: ''
+  EXTERNAL_PLUGINS_PATH: '/plugins'
+  ENABLED_PLUGINS: ''
+  PUBLISH_EVENTS: 'True'
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: obs-listener-agent
+  namespace: datakitchen
+  labels:
+    app: obs-listener-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: obs-listener-agent
+  template:
+    metadata:
+      labels:
+        app: obs-listener-agent
+    spec:
+      containers:
+      - name: obs-listener-agent
+        image: dk-event-hubs-obs-agent:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: EVENTS_API_HOST
+          valueFrom:
+            secretKeyRef:
+              name: obs-listener-secret
+              key: EVENTS_API_HOST
+        - name: EVENTS_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: obs-listener-secret
+              key: EVENTS_API_KEY
+        - name: EVENT_HUB_CONN_STR
+          valueFrom:
+            secretKeyRef:
+              name: obs-listener-secret
+              key: EVENT_HUB_CONN_STR
+        - name: EVENT_HUB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: obs-listener-secret
+              key: EVENT_HUB_NAME
+        - name: AZURE_STORAGE_CONN_STR
+          valueFrom:
+            secretKeyRef:
+              name: obs-listener-secret
+              key: AZURE_STORAGE_CONN_STR
+        - name: BLOB_CONTAINER_NAME
+          valueFrom:
+            secretKeyRef:
+              name: obs-listener-secret
+              key: BLOB_CONTAINER_NAME
+        - name: EXTERNAL_PLUGINS_PATH
+          valueFrom:
+            secretKeyRef:
+              name: obs-listener-secret
+              key: EXTERNAL_PLUGINS_PATH
+        - name: ENABLED_PLUGINS
+          valueFrom:
+            secretKeyRef:
+              name: obs-listener-secret
+              key: ENABLED_PLUGINS
+        - name: PUBLISH_EVENTS
+          valueFrom:
+            secretKeyRef:
+              name: obs-listener-secret
+              key: PUBLISH_EVENTS
+      imagePullSecrets:
+      - name: obs-docker-creds
