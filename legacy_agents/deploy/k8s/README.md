@@ -6,7 +6,7 @@
 1. curl and kubectl packages installed (https://everything.curl.dev/get, https://kubernetes.io/docs/tasks/tools/)
 2. Kubernetes Cluster
 3. Access to Kubernetes cluster using `kubectl`
-4. Required Values (https://docs.datakitchen.io/articles/#!dataops-observability-help/deploy-agent-in-kubernetes)
+4. Required Values (https://docs.datakitchen.io/articles/dataops-observability-help/observability-integration-agents)
 ##### Deploy DataKitchen Observability Agent
 
 * Run the below command with right *option* from list of valid options in a command line terminal that has access to the Kubernetes cluster and provide required values gathered from Prerequisite #4 and
