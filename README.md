@@ -149,3 +149,36 @@ On either a build of `main` or a manual build of main, you should see a series o
 Choose one (and only one) of these jobs and hit the "play" button.
 
 These will increment the versions and push them to the appropriate release channels.
+
+## Community
+
+### Getting Started Guide
+We recommend you start by going through the [Data Observability Overview Demo](https://docs.datakitchen.io/articles/open-source-data-observability/data-observability-overview).
+
+### Connect
+Talk and Learn with other data practitioners who are building with DataKitchen. Share knowledge, get help, and contribute to our open-source project. 
+
+Join our community here:
+
+* 🌟 [Star us on GitHub](https://github.com/DataKitchen/data-observability-installer)
+
+* 🐦 [Follow us on Twitter](https://twitter.com/i/flow/login?redirect_after_login=%2Fdatakitchen_io)
+
+* 🕴️ [Follow us on LinkedIn](https://www.linkedin.com/company/datakitchen)
+
+* 📺 [Get Free DataOps Fundamentals Certification](https://info.datakitchen.io/training-certification-dataops-fundamentals)
+
+* 📚 [Read our blog posts](https://datakitchen.io/blog/)
+
+* 👋 [Join us on Slack](https://data-observability.slack.com)
+
+* 🗃 [Sign The DataOps Manifesto](https://DataOpsManifesto.org)
+
+* 🗃 [Sign The Data Journey Manifesto](https://DataJourneyManifesto.org)
+
+
+### Contributing
+For details on contributing a new Agent or running the project for development, check out our contributing guide.
+
+### License
+DataKitchen DataOps Observability Agents are Apache 2.0 licensed.
