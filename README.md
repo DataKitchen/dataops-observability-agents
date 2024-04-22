@@ -1,5 +1,9 @@
 
-# Production Agents
+# DataOps Observability Integration Agents ![apache 2.0 license Badge](https://img.shields.io/badge/License%20-%20Apache%202.0%20-%20blue) ![PRs Badge](https://img.shields.io/badge/PRs%20-%20Welcome%20-%20green)
+
+*<p style="text-align: center;">DataOps Observability Integration Agents are part of DataKitchen's Open Source Data Observability. They connect to various ETL, ELT, BI, data science, data visualization, data governance, and data analytic tools. They provide logs, messages, metrics, overall run-time start/stop, subtask status, and scheduling information to DataOps Observability.</p>*
+
+![DatKitchen Open Source Data Observability](https://datakitchen.io/wp-content/uploads/2024/04/Screenshot-2024-04-22-at-12.40.59 PM.png)
 
 ## Setup
 
