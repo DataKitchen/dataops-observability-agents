@@ -28,7 +28,7 @@ def core_config_data():
         "agent_type": "databricks",
         # No assigned meaning.
         "observability_service_account_key": "2wfLQIxdpeEBBULxnVqxODaKK2-o97WuqgOZxN2ex3d4JEwnMayp_oK55xZE8w31sgdL8f2Smpn3lUGv_Msiep7gm5BB7FzO",
-        "observability_base_url": "https://test.domain.com/",
+        "observability_base_url": "https://test.domain.com/api",
         "log_level": "warning",
         "agent_key": "agent test key",
     }

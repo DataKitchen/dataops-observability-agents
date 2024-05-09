@@ -4,7 +4,7 @@ __all__ = ["CoreConfiguration", "DEFAULT_CONFIGURATION_FILE_PATHS"]
 from pathlib import Path
 from typing import Literal
 
-from pydantic import HttpUrl, NonNegativeFloat, NonNegativeInt, SecretStr
+from pydantic import HttpUrl, NonNegativeFloat, NonNegativeInt, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 DEFAULT_CONFIGURATION_FILE_PATHS: tuple[Path, ...] = (Path("agent.toml"), Path("/etc/observability/agent.toml"))
@@ -23,3 +23,10 @@ class CoreConfiguration(BaseSettings):
     max_channel_capacity: NonNegativeInt = 0
     # in seconds
     heartbeat_period: NonNegativeFloat = 60.0
+
+    @field_validator("observability_base_url", mode="before")
+    @classmethod
+    def url_append_slash(cls, base_url: str) -> str:
+        if base_url:
+            return base_url if str(base_url).endswith('/') else f"{base_url}/"
+        return base_url
