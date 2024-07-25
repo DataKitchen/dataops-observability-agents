@@ -5,6 +5,12 @@
 
 ![DatKitchen Open Source Data Observability](https://datakitchen.io/wp-content/uploads/2024/04/Screenshot-2024-04-22-at-12.40.59 PM.png)
 
+## Current List of Integration Agents
+
+<p align="center">
+<img alt="DatKitchen Open Source Data Observability Integration Agents List" src="https://datakitchen.io/wp-content/uploads/2024/07/Datakitchen-agent-list-q2-24.png" width="70%" >
+</p>
+
 ## Setup
 
 Before you begin you will need to clone the repository.
