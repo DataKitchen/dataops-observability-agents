@@ -4,6 +4,7 @@ Thanks to everyone who has contributed to DataOps Observability Agents!
 
 💻 = code, 🚇 = infrastructure, 📖 = documentation, 📆 = project management, 🤔 = product management, 💬 = user support
 
+- [Priyanjna Sharma](https://www.linkedin.com/in/priyanjnasharma/) 💬 💻
 - [Samantha Hamilton](https://www.linkedin.com/in/shamilton-darlingdocs/) 📖
 - [Khanh Tran](https://www.linkedin.com/in/k-tran) 💻
 - [Abhinav Tiwari](https://www.linkedin.com/in/abhinavyogeshtiwari) 💬 💻
