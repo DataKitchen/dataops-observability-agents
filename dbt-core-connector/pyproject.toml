@@ -1,0 +1,201 @@
+[build-system]
+requires = [
+    "setuptools ~= 65.3",
+    "wheel",
+    "build"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "action_observer"
+version = "0.0.8"
+description = "Github Action Observer"
+urls = { "homepage" = "https://datakitchen.io" }
+authors = [
+    { "name" = "DataKitchen, Inc.", "email" = "info@datakitchen.io" },
+]
+readme = "README.md"
+classifiers = [
+    "Intended Audience :: Developers",
+    "Intended Audience :: Data Engineers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.10",
+]
+requires-python = ">=3.10"
+
+dependencies = [
+    "events_ingestion_client~=1.2.0",
+    "attrs~=23.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "mypy~=1.3.0",
+    "ruff~=0.0.263",
+    "responses~=0.23.1",
+    "pytest~=7.3.2",
+    "pytest-cov~=4.1.0",
+    "pytest-xdist~=3.3.1",
+    "semver~=3.0.1",
+]
+build = [
+    "build",
+    "setuptools~=67.8",
+    "wheel",
+    "trove-classifiers",
+]
+
+
+release = [
+    "bumpver~=2023.1124"
+]
+
+[project.entry-points.console_scripts]
+action_observer = "action_observer.__main__:cli"
+
+
+
+[tool.setuptools.packages.find]
+# see the important note for why we glob. TL;DR: Otherwise you don't get submodules
+# https://setuptools.pypa.io/en/latest/userguide/package_discovery.html#finding-simple-packages
+include = [
+      "action_observer*",
+]
+exclude = [ "*.tests", "tests*", "invocations*", "deploy*", "scripts*", "testlib*"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+# --strict-markers means the markers have to be defined in this file before use, which prevents mispellings.
+# --strict-config means that any warnings encountered while parsing the `pytest`configuration file will raise errors.
+# -ra: show extra test data.
+addopts = "-ra --strict-markers --strict-config --durations=10 "
+python_files = "test_*.py"
+python_classes = "Test_"
+python_functions = "test_*"
+
+markers = [
+    "unit: The test is a unit test and is thus expected to be fast with little setup",
+    "integration: The test is an integration test and is thus expected to be somewhat slower with a little more setup",
+    "functional: The test is a functional test and is thus expected to be slower with greater setup",
+    "slow: Mark tests which are known to be slow. Useful for filtering",
+]
+filterwarnings = [
+    # remove when resolved: https://github.com/marshmallow-code/apispec/issues/739
+    'ignore:distutils Version classes are deprecated:DeprecationWarning:apispec'
+]
+
+# see: https://mypy.readthedocs.io/en/stable/config_file.html#using-a-pyproject-toml-file
+# for settings that do not have a comment,
+# see: https://mypy.readthedocs.io/en/stable/config_file.html
+# for an explanation of their functionality.
+# WARNING: When changing mypy configurations, be sure to test them after removing your .mypy_cache
+[tool.mypy]
+python_version = "3.10"
+check_untyped_defs = true
+disallow_untyped_decorators = true
+disallow_untyped_defs = true
+# This warns if any returns get cast to 'Any' due to type uncertainty by mypy. Since 'Any' is a valid return type
+# for any function, returning any from a str function would be valid. This causes it to raise a warning instead.
+warn_return_any = true
+# This shows an error-code on failure, which is useful on debugging and possibly ignoring those particular
+# lines if need-be.
+show_error_codes = true
+# This warns us if we're using '# type ignore' on a function which mypy knows it has definitions for.
+# Hopefully this allows us to phase in type-checks on more libraries.
+warn_unused_ignores = true
+# Enables PEP 420 style namespace packages. This is a complex topic,
+# but my reading suggests this is a generally 'good' idea.
+# so see: https://mypy.readthedocs.io/en/stable/config_file.html#confval-namespace_packages
+namespace_packages = true
+warn_redundant_casts = true
+# Remember that time you forgot to put a return in the function? This warns us of that.
+# i.e.,
+#
+# def foo() -> str:
+#     x = 'a' + 'x'
+# will return an error for not having the return it promised.
+warn_no_return = true
+# This attempts to warn us when we encounter code that is currently unreachable.
+warn_unreachable = true
+# Now for some configurations to improve our error messages Attempts to make the output prettier for us mere mortals.
+pretty = true
+# This tries to show some additional context around where the error is occuring
+show_error_context = true
+# Mypy appears smart enough to ignore hidden directories. But it needs to scan __pycache__ for .pyc and pyi files,
+# so it cannot honor gitignore.
+exclude = [
+    '''^(?:.*\/)+[tT]ests?''',
+    'conftest.py',
+    'venv/',
+    'build/',
+    'testlib/fixtures/',
+]
+
+[[tool.mypy.overrides]]
+module = "events_ingestion_client.*"
+ignore_missing_imports = true
+
+[tool.ruff]
+# see: https://beta.ruff.rs/docs/rules.
+# Enable the following checks
+# S - Bandit
+# F - Pyflakes
+# T10 - Debugger statements
+# I - isort
+# G - Flake8 Logging Format
+# A - Flake8 builtins
+# B - Flake8 bugbear - common bug-causes
+# UP - Use up-to-date syntax
+# ISC - Implicit String Concatonation check.
+# T20 - Don't allow print statements. use Logger.
+# RSE - Raise checks. Don't use extra parantheses.
+# Q - Add lints for quoting.
+# ARG - Check for unused arguments. __main__ excluded.
+# TRY - Catch try/except anti-patterns.
+# C4 - Lint list comprehensions
+# RUF - Ruff specific checks.
+select = ["A", "F", "S", "I", "T10", "B", "UP", "ISC", "T20", "RSE", "Q", "ARG", "TRY", "C4", "RUF"]
+target-version = "py310"
+line-length = 120
+
+# globally ignore the following error codes
+# * TRY003: Avoid specifying long messages outside the exception class
+ignore = ["TRY003"]
+
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F403", "F401"]
+"scripts/check-docker-extensions.py" = ["T201"]
+"scripts/check-tests-are-marked.py" = ["T201", "S603", "S607"]
+"tasks.py" = ["F403"]
+"tests/**" = ["S101"]
+"invocations/**" = ["ARG001", "T201"]
+
+
+# See: https://coverage.readthedocs.io/en/latest/config.html
+[tool.coverage.run]
+branch=true
+# Every time there is a new top-level module, this will need to be expanded.
+source = [
+    "action_observer"
+]
+
+[tool.coverage.report]
+# We don't need to report the coverage lines on tests
+omit = ["*/*tests/*"]
+# This skips __init__.py and other empty files.
+skip_empty=true
+
+[tool.bumpver]
+current_version = "0.0.8"
+version_pattern = "MAJOR.MINOR.PATCH[PYTAGNUM]"
+commit_message = "Bump version: {old_version} -> {new_version}"
+commit = true
+tag = true
+push = false
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = [
+    'version = "{version}"',
+]
