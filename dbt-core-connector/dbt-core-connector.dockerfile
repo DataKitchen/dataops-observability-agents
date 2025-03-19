@@ -1,5 +1,5 @@
 ARG BASE_IMAGE_URL
-FROM ${BASE_IMAGE_URL}python:3.10-alpine3.18 AS build-image
+FROM ${BASE_IMAGE_URL}python:3.12-alpine3.21 AS build-image
 LABEL maintainer="devops@datakitchen.io"
 
 RUN mkdir -p /dk
@@ -8,7 +8,7 @@ COPY ./pyproject.toml /tmp/dk/
 RUN python3 -m pip install /tmp/dk --prefix=/dk
 
 
-FROM ${BASE_IMAGE_URL}python:3.10-alpine3.18 AS release-image
+FROM ${BASE_IMAGE_URL}python:3.12-alpine3.21 AS release-image
 
 COPY . /tmp/dk/
 COPY --from=build-image /dk /dk
