@@ -1,6 +1,6 @@
 [build-system]
 requires = [
-    "setuptools ~= 65.3",
+    "setuptools",
     "wheel",
     "build"
 ]
@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "action_observer"
-version = "0.0.8"
+version = "1.0.0"
 description = "Github Action Observer"
 urls = { "homepage" = "https://datakitchen.io" }
 authors = [
@@ -20,9 +20,9 @@ classifiers = [
     "Intended Audience :: Data Engineers",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.12",
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 
 dependencies = [
     "events_ingestion_client~=1.2.0",
