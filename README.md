@@ -29,9 +29,9 @@ git clone <URL>
 Create a development environment by running the following:
 
 ```shell
-# this project requires python 3.11
+# this project requires python 3.12
 cd /your/cloned/repo/
-python3.11 -m venv venv
+python3.12 -m venv venv
 source venv/bin/activate
 # Linux
 pip install .[dev,release]
@@ -165,7 +165,7 @@ We recommend you start by going through the [Data Observability Overview Demo](h
 For support requests, [join the Data Observability Slack](https://data-observability-slack.datakitchen.io/join) and ask post on #support channel.
 
 ### Connect
-Talk and Learn with other data practitioners who are building with DataKitchen. Share knowledge, get help, and contribute to our open-source project. 
+Talk and Learn with other data practitioners who are building with DataKitchen. Share knowledge, get help, and contribute to our open-source project.
 
 Join our community here:
 

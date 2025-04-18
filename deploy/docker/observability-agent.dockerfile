@@ -1,20 +1,15 @@
 ARG BASE_IMAGE_URL
-FROM ${BASE_IMAGE_URL}python:3.11-slim-bookworm AS build-image
+FROM ${BASE_IMAGE_URL}python:3.12-alpine3.21 AS build-image
 LABEL maintainer="DataKitchen"
 
-RUN apt-get update && \
-    apt-get install -y curl gnupg2 && \
-    curl -sS https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg && \
-    curl -sS https://packages.microsoft.com/config/debian/12/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
-    echo msodbcsql18 msodbcsql/ACCEPT_EULA boolean true | debconf-set-selections && \
-    apt-get update &&  \
-    DEBIAN_FRONTEND="noninteractive" ACCEPT_EULA=Y apt-get install -y msodbcsql18 && \
-    apt-get remove -y curl gnupg2 && \
-    apt-get autoremove -y && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk update && apk upgrade && apk add --no-cache \
+    g++ \
+    unixodbc-dev \
+    curl \
+    gnupg
 
-RUN mkdir -p /tmp/dk
-RUN mkdir /dk
+COPY --chmod=775 ./deploy/docker/install_linuxodbc.sh /tmp/dk/install_linuxodbc.sh
+RUN /tmp/dk/install_linuxodbc.sh
 
 # Installing the dependencies first, so that this layer wont change too often
 COPY pyproject.toml /tmp/dk/
@@ -29,16 +24,10 @@ RUN python3 -O -m pip install --no-deps /tmp/dk --prefix=/dk
 # Cleaning up unused files
 RUN rm -Rf /tmp/dk
 
-ENV PYTHONPATH=${PYTHONPATH}:/dk/lib/python3.11/site-packages \
+ENV PYTHONPATH=${PYTHONPATH}:/dk/lib/python3.12/site-packages \
     PATH=${PATH}:/dk/bin
 
-ARG USERNAME=dkagent
-ARG USER_UID=10001
-ARG USER_GID=10002
-
-RUN groupadd --gid $USER_GID $USERNAME && \
-    useradd --uid $USER_UID --gid $USER_GID -m $USERNAME
-
-USER $USERNAME:$USERNAME
+RUN addgroup -S dkagent && adduser -S dkagent -G dkagent
+USER dkagent
 
 ENTRYPOINT ["observability-agent"]
