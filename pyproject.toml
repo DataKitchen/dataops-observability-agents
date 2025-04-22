@@ -1,6 +1,6 @@
 [build-system]
 requires = [
-    "setuptools ~= 65.3",
+    "setuptools",
     "wheel",
     "build"
 ]
@@ -19,12 +19,12 @@ classifiers = [
     "Intended Audience :: Data Engineers",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 
 dependencies = [
-    "azure-identity==1.15.0",
+    "azure-identity==1.21.0",
     "azure-synapse-artifacts==0.18.0",
     "azure-eventhub==5.11.5",
     "azure-eventhub-checkpointstoreblob-aio==1.1.4",
@@ -112,7 +112,7 @@ markers = [
 # for an explanation of their functionality.
 # WARNING: When changing mypy configurations, be sure to test them after removing your .mypy_cache
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.12"
 check_untyped_defs = true
 disallow_untyped_decorators = true
 disallow_untyped_defs = true
