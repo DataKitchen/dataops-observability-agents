@@ -21,11 +21,24 @@ RUN python3 -O -m pip install /tmp/dk --prefix=/dk
 COPY . /tmp/dk/
 RUN python3 -O -m pip install --no-deps /tmp/dk --prefix=/dk
 
-# Cleaning up unused files
-RUN rm -Rf /tmp/dk
+# --- Runtime stage: only what's needed to run the agent ---
+FROM ${BASE_IMAGE_URL}python:3.12-alpine3.22 AS runtime-image
 
-ENV PYTHONPATH=${PYTHONPATH}:/dk/lib/python3.12/site-packages \
-    PATH=${PATH}:/dk/bin
+RUN apk update && apk upgrade && apk add --no-cache \
+    unixodbc \
+    libstdc++ \
+    && pip uninstall -y pip
+
+# Copy ODBC driver and tools installed by install_linuxodbc.sh
+COPY --from=build-image /opt/microsoft /opt/microsoft
+# Copy ODBC driver config registered via apk
+COPY --from=build-image /etc/odbcinst.ini /etc/odbcinst.ini
+
+# Copy pip-installed packages
+COPY --from=build-image /dk /dk
+
+ENV PYTHONPATH="/dk/lib/python3.12/site-packages" \
+    PATH="/usr/local/bin:${PATH}:/dk/bin:/opt/microsoft/mssql-tools18/bin"
 
 RUN addgroup -S dkagent && adduser -S dkagent -G dkagent
 USER dkagent
