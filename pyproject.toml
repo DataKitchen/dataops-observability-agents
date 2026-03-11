@@ -34,7 +34,12 @@ dependencies = [
     "python-dateutil==2.8.2",
     "pydantic==2.5.2",
     "pydantic_settings==2.1.0",
-    "pyodbc==5.0.1"
+    "pyodbc==5.0.1",
+    # Minimum versions for transitive deps to resolve known vulnerabilities
+    "urllib3>=2.6.3",
+    "aiohttp>=3.13.3",
+    "azure-core>=1.38.0",
+    "cryptography>=46.0.5",
 ]
 
 [project.optional-dependencies]
