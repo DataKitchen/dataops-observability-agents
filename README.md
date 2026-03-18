@@ -159,7 +159,7 @@ These will increment the versions and push them to the appropriate release chann
 ## Community
 
 ### Getting Started Guide
-We recommend you start by going through the [Data Observability Overview Demo](https://docs.datakitchen.io/articles/open-source-data-observability/data-observability-overview).
+We recommend you start by going through the [Data Observability Overview Demo](https://docs.datakitchen.io/tutorials/quickstart-demo/).
 
 ### Support
 For support requests, [join the Data Observability Slack](https://data-observability-slack.datakitchen.io/join) and ask post on #support channel.

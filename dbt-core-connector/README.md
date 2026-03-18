@@ -15,7 +15,7 @@ The general process is:
 5. Configure jaffle_shop
 6. Run!
 
-The parameters for the [dbt core agent](https://docs.datakitchen.io/articles/#!dataops-observability-help/configure-dbt-core-agent) are on the DataKitchen docs.
+The parameters for the [dbt core agent](https://docs.datakitchen.io/observability/integration-agents/dbt-core-agent/) are on the DataKitchen docs.
 
 ### dbt scenarios
 To create an error in a dbt run, write a model that queries a table that doesn't exist. For example:
