@@ -3,12 +3,12 @@
 
 *<p style="text-align: center;">DataOps Observability Integration Agents are part of DataKitchen's Open Source Data Observability. They connect to various ETL, ELT, BI, data science, data visualization, data governance, and data analytic tools. They provide logs, messages, metrics, overall run-time start/stop, subtask status, and scheduling information to DataOps Observability.</p>*
 
-![DatKitchen Open Source Data Observability](https://datakitchen.io/wp-content/uploads/2024/04/Screenshot-2024-04-22-at-12.40.59 PM.png)
+![DataKitchen Open Source Data Observability](https://raw.githubusercontent.com/DataKitchen/dataops-observability-agents/main/docs/assets/images/readme/agent-architecture-overview.png)
 
 ## Current List of Integration Agents
 
 <p align="center">
-<img alt="DatKitchen Open Source Data Observability Integration Agents List" src="https://datakitchen.io/wp-content/uploads/2024/07/Datakitchen-agent-list-q2-24.png" width="70%" >
+<img alt="DataKitchen Open Source Data Observability Integration Agents List" src="https://raw.githubusercontent.com/DataKitchen/dataops-observability-agents/main/docs/assets/images/readme/integration-agents-list.png" width="70%" >
 </p>
 
 ## Setup
